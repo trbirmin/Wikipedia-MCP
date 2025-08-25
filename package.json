@@ -1,0 +1,32 @@
+{
+  "name": "mcp-wikipedia-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trbirmin/Wikipedia-MCP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trbirmin/Wikipedia-MCP/issues"
+  },
+  "homepage": "https://github.com/trbirmin/Wikipedia-MCP#readme",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "dev": "ts-node --transpile-only src/server.ts",
+    "test:client": "ts-node --transpile-only test/client.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.12"
+  }
+}
