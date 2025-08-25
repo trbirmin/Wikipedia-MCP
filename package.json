@@ -18,7 +18,9 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "dev": "ts-node --transpile-only src/server.ts",
-    "test:client": "ts-node --transpile-only test/client.ts"
+  "test:client": "ts-node --transpile-only test/client.ts",
+  "test": "ts-node --transpile-only test/client.ts",
+  "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.4",
@@ -27,6 +29,10 @@
   "devDependencies": {
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
-    "@types/node": "^20.14.12"
+  "@types/node": "^20.14.12",
+  "eslint": "^9.9.0",
+  "@typescript-eslint/eslint-plugin": "^8.1.0",
+  "@typescript-eslint/parser": "^8.1.0",
+  "globals": "^15.11.0"
   }
 }
