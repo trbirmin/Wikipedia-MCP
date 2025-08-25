@@ -1,12 +1,9 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - tb-WikiMcp-wa
+name: Build and deploy Node.js app to Azure Web App - tb-WikiMcp-wa (manual)
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -51,7 +48,7 @@ jobs:
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2.2.17
         with:
           app-name: 'tb-WikiMcp-wa'
           slot-name: 'Production'
