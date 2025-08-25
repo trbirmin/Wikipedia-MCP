@@ -2,7 +2,7 @@ import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mc
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
-const USER_AGENT = "mcp-wikipedia-server/0.1 (+https://example.local; contact@example.local) @modelcontextprotocol/sdk";
+const USER_AGENT = "Wikipedia-MCP/0.1 (+https://github.com/trbirmin/Wikipedia-MCP; contact: GitHub Issues) @modelcontextprotocol/sdk";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
