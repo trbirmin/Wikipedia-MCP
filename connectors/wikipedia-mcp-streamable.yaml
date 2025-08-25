@@ -1,18 +1,42 @@
 swagger: '2.0'
+
+# This OpenAPI document defines a single HTTPS endpoint implementing
+# the MCP Streamable HTTP protocol for use with Microsoft Copilot Studio.
+#
+# Notes:
+# - The 'host' below MUST be the public hostname of your deployed server (no scheme).
+# - The server must listen on 0.0.0.0 and the port provided via the environment (e.g., PORT in Azure App Service).
+# - Copilot Studio discovers the MCP capability via the x-ms-agentic-protocol extension.
+
 info:
   title: Wikipedia MCP
-  description: MCP Streamable HTTP endpoint for Wikipedia MCP server
+  description: MCP Streamable HTTP endpoint for the Wikipedia MCP server, suitable for Copilot Studio connectors.
   version: 1.0.0
+
+# Public hostname of your App Service (no https:// prefix). Update if you redeploy or rename the app.
 host: tb-wikimcp-wa-gbhzfdgpd9fkasa4.eastus2-01.azurewebsites.net
+
+# Root path of the service. If you mount the MCP route under a subpath, change this accordingly.
 basePath: /
+
 schemes:
-  - https
+  - https  # MCP over HTTPS is required for Copilot Studio.
+
 paths:
   /mcp:
     post:
       summary: Wikipedia MCP Server
+      description: |-
+        Entry point for the MCP Streamable HTTP protocol. Copilot Studio uses this
+        endpoint to communicate with your MCP server over a streaming transport.
+        Clients should provide protocol-specific payloads as required by MCP.
+
+      # This extension indicates the MCP Streamable HTTP protocol is implemented here.
       x-ms-agentic-protocol: mcp-streamable-1.0
+
       operationId: InvokeMCP
+
+      # Response codes are protocol-driven; 200 indicates a successful protocol exchange.
       responses:
         '200':
-          description: Success
+          description: Successful MCP stream established/handled.
