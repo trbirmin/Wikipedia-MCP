@@ -1,5 +1,4 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
 const USER_AGENT = "Wikipedia-MCP/0.1 (+https://github.com/trbirmin/Wikipedia-MCP; contact: GitHub Issues) @modelcontextprotocol/sdk";
@@ -351,14 +350,4 @@ export async function createServer() {
 
   return server;
 }
-
-async function main() {
-  const server = await createServer();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-}
-
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+// Note: no direct bootstrap here. Use dedicated entrypoints (stdio.ts, http.ts)

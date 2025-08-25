@@ -18,15 +18,21 @@
   "clean": "rimraf dist",
   "prebuild": "rimraf dist",
   "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
-    "dev": "ts-node --transpile-only src/server.ts",
+  "start": "node dist/stdio.js",
+  "start:http": "node dist/http.js",
+  "dev": "ts-node --transpile-only src/stdio.ts",
+  "dev:http": "ts-node --transpile-only src/http.ts",
   "test:client": "tsx test/client.ts",
+  "test:http": "cross-env MCP_URL= tsx test/http_client.ts",
   "test": "npm run -s build && tsx test/client.ts",
+  "dev:test": "npm run -s build && cross-env NODE_DEBUG=child_process,undici DEBUG=@modelcontextprotocol:* NODE_OPTIONS=--trace-warnings tsx test/client.ts",
   "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.4",
-    "zod": "^3.23.8"
+  "zod": "^3.23.8",
+  "express": "^4.19.2",
+  "cors": "^2.8.5"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
@@ -37,6 +43,7 @@
   "@typescript-eslint/parser": "^8.1.0",
   "globals": "^15.11.0",
   "tsx": "^4.16.0",
-  "rimraf": "^5.0.7"
+  "rimraf": "^5.0.7",
+  "cross-env": "^7.0.3"
   }
 }

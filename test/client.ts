@@ -4,7 +4,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 async function main() {
   const transport = new StdioClientTransport({
     command: process.execPath,
-    args: ["dist/server.js"],
+  args: ["dist/stdio.js"],
   });
   const client = new Client({ name: "test-client", version: "0.0.1" });
   await client.connect(transport);

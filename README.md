@@ -1,32 +1,45 @@
-# MCP Wikipedia Server
+# Wikipedia MCP Server
 
-This is a Model Context Protocol (MCP) server that exposes Wikipedia search and page content.
+This server exposes Wikipedia search and page tools over MCP. It supports:
+- stdio transport (for local tools and testing)
+- Streamable HTTP transport (for Copilot Studio/custom connectors)
 
 Features
 - Tools:
   - search_wikipedia(query, limit, lang?) → top page matches (default en)
   - get_page_html(title, lang?) → HTML of a page (default en)
-  - get_page_extract(title, lang?) → plain-text summary via TextExtracts (default en)
-- Resources:
-  - wiki://page/{title} (default en)
+  - get_page_extract(title, lang?) → plain-text summary (default en)
+- Resources (not surfaced in Copilot Studio):
+  - wiki://page/{title}
   - wiki://{lang}/page/{title}
 
 Notes
 - Uses public MediaWiki APIs; no key required.
-- Sends a descriptive User-Agent/Api-User-Agent per WMF policy, adds maxlag, retries with exponential backoff on 429/5xx.
-- Built-in in-memory cache and polite throttling:
-  - search cached ~30s; extracts ~1h; HTML ~10m
-  - minimum 150ms gap between requests (serialized effectively)
- - REST v1 endpoints:
-   - HTML served via /w/rest.php/v1/page/{title}/html with Action API parse as fallback
-   - Search falls back to /w/rest.php/v1/search/page when Action API search fails
-   - Extracts already fall back to REST summary: /api/rest_v1/page/summary/{title}
+- Descriptive User-Agent; adds maxlag; exponential backoff on 429/5xx.
+- In-memory cache and polite throttling:
+  - search ~30s; extracts ~1h; HTML ~10m
+  - min 150ms between requests
+- REST v1 endpoints used when available (HTML primary; search fallback; summary fallback).
 
-Run
-1. Install deps
-2. Start in dev (stdio transport)
+## Run locally (stdio)
+- Install deps: npm ci
+- Build: npm run build
+- Start: npm start
+- Test client: npm test
 
-Client testing
-- A tiny client is included to list tools and call a search.
-  - Try: search_wikipedia with lang: "es" and verify Spanish results.
-  - Try: get_page_extract for the same title twice; second should be cache-hit and faster.
+## Run HTTP (Streamable)
+- Build: npm run build
+- Start HTTP: npm run start:http
+- Endpoint: http://localhost:3000/mcp
+
+Environment
+- PORT: HTTP port (default 3000)
+- ALLOWED_HOSTS: for DNS rebinding protection (default 127.0.0.1,localhost)
+- ALLOWED_ORIGINS: CORS origins (default *)
+
+## Copilot Studio connector
+Use `connectors/wikipedia-mcp-streamable.yaml`.
+- Replace `YOUR_PUBLIC_HOSTNAME` with your public host.
+- Import OpenAPI in a Custom Connector and attach to your agent.
+
+Copilot Studio supports MCP tools only; resources won’t appear there.

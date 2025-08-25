@@ -1,0 +1,82 @@
+name: Deploy to Azure App Service (OIDC)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  # Set these to match your App Service and resource group
+  AZURE_WEBAPP_NAME: tb-wikimcp-wa-gbhzfdgpd9fkasa4
+  AZURE_RESOURCE_GROUP: YOUR_RESOURCE_GROUP
+  NODE_VERSION: '20.x'
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # required for OIDC login
+      contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (non-blocking)
+        run: npm run -s lint
+        continue-on-error: true
+
+      - name: Build
+        run: npm run -s build
+
+      - name: Test
+        run: npm test
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Azure context
+        uses: azure/cli@v2
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        with:
+          inlineScript: |
+            echo "Showing current account context:" 
+            az account show --output table || true
+            echo "Setting subscription explicitly:" 
+            az account set -s $AZURE_SUBSCRIPTION_ID
+            echo "Account context after set:" 
+            az account show --output table
+
+      # Optional: ensure app settings are present (e.g., build/runtime)
+      - name: Ensure App Settings
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          resource-group-name: ${{ env.AZURE_RESOURCE_GROUP }}
+          app-settings-json: |
+            [
+              { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" },
+              { "name": "NODE_ENV", "value": "production" }
+            ]
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: '.'

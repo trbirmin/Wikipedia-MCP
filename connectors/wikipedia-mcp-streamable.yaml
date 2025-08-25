@@ -1,0 +1,18 @@
+swagger: '2.0'
+info:
+  title: Wikipedia MCP
+  description: MCP Streamable HTTP endpoint for Wikipedia MCP server
+  version: 1.0.0
+host: tb-wikimcp-wa-gbhzfdgpd9fkasa4.eastus2-01.azurewebsites.net
+basePath: /
+schemes:
+  - https
+paths:
+  /mcp:
+    post:
+      summary: Wikipedia MCP Server
+      x-ms-agentic-protocol: mcp-streamable-1.0
+      operationId: InvokeMCP
+      responses:
+        '200':
+          description: Success
