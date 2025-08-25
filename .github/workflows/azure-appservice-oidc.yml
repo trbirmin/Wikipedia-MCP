@@ -7,8 +7,9 @@ on:
 
 env:
   # Set these to match your App Service and resource group
-  AZURE_WEBAPP_NAME: tb-wikimcp-wa-gbhzfdgpd9fkasa4
-  AZURE_RESOURCE_GROUP: YOUR_RESOURCE_GROUP
+  # This must be the App Service resource name (not the default hostname)
+  AZURE_WEBAPP_NAME: tb-WikiMcp-wa
+  AZURE_RESOURCE_GROUP: tb-wikimcp-rg
   NODE_VERSION: '20.x'
 
 jobs:
