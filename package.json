@@ -18,8 +18,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "dev": "ts-node --transpile-only src/server.ts",
-  "test:client": "ts-node --transpile-only test/client.ts",
-  "test": "npm run -s build && ts-node --transpile-only test/client.ts",
+  "test:client": "tsx test/client.ts",
+  "test": "npm run -s build && tsx test/client.ts",
   "lint": "eslint . --ext .ts"
   },
   "dependencies": {
@@ -33,6 +33,7 @@
   "eslint": "^9.9.0",
   "@typescript-eslint/eslint-plugin": "^8.1.0",
   "@typescript-eslint/parser": "^8.1.0",
-  "globals": "^15.11.0"
+  "globals": "^15.11.0",
+  "tsx": "^4.16.0"
   }
 }
