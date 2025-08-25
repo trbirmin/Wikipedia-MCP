@@ -50,6 +50,33 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Validate Azure context and target Web App
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_NAME="${{ env.AZURE_WEBAPP_NAME }}"
+          RG_NAME="${{ env.AZURE_RESOURCE_GROUP }}"
+          echo "Logged in context:" 
+          az account show --query "{subscriptionId:id,name:name,tenantId:tenantId}" -o table
+          if [ -z "$APP_NAME" ]; then
+            echo "AZURE_WEBAPP_NAME is empty. Set env.AZURE_WEBAPP_NAME to your App Service name." >&2
+            exit 1
+          fi
+          if [ -z "$RG_NAME" ] || [ "$RG_NAME" = "YOUR_RESOURCE_GROUP" ]; then
+            echo "Attempting to resolve resource group for '$APP_NAME'..."
+            RG_NAME=$(az resource list --name "$APP_NAME" --resource-type "Microsoft.Web/sites" --query "[0].resourceGroup" -o tsv || true)
+            if [ -n "$RG_NAME" ]; then
+              echo "Resolved resource group: $RG_NAME"
+              echo "AZURE_RESOURCE_GROUP=$RG_NAME" >> "$GITHUB_ENV"
+            fi
+          fi
+          if [ -z "$RG_NAME" ]; then
+            echo "Web App '$APP_NAME' was not found in the current subscription. Check app name and AZURE_SUBSCRIPTION_ID secrets." >&2
+            exit 1
+          fi
+          echo "Verifying Web App exists in RG '$RG_NAME'..."
+          az webapp show -n "$APP_NAME" -g "$RG_NAME" -o table
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2.2.17
         with:
