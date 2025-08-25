@@ -199,7 +199,7 @@ async function getExtract(title: string, lang?: string): Promise<string> {
       const first = Object.values(pages)[0] as any;
       if (first?.extract) return first.extract as string;
     }
-  } catch (_) {
+  } catch {
     // fall through to REST
   }
   // Fallback: Wikimedia REST summary endpoint
@@ -208,7 +208,7 @@ async function getExtract(title: string, lang?: string): Promise<string> {
     const rest = await fetchJson(restUrl, { cacheTtlMs: 60 * 60 * 1000, throttleMs: 150 });
     if (typeof rest?.extract === "string" && rest.extract) return rest.extract as string;
     if (typeof rest?.description === "string" && rest.description) return rest.description as string;
-  } catch (_) {}
+  } catch {}
   return "";
 }
 
@@ -220,7 +220,7 @@ async function getHtml(title: string, lang?: string): Promise<string> {
       throttleMs: 150
     });
     if (htmlRest && typeof htmlRest === "string") return htmlRest;
-  } catch (_) {
+  } catch {
     // fallback to Action API
   }
   const data = await fetchJson(buildParseHtmlUrl(title, lang), {
@@ -261,7 +261,7 @@ export async function createServer() {
           size: s.size as number,
           timestamp: s.timestamp as string
         }));
-      } catch (_) {
+      } catch {
         // fall through to REST search
       }
       if (!items.length) {
@@ -276,7 +276,7 @@ export async function createServer() {
             size: undefined,
             timestamp: undefined
           }));
-        } catch (_) {}
+        } catch {}
       }
       return {
         content: [
